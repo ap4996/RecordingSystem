@@ -6,6 +6,7 @@ public class RecordAndReplayInstaller : MonoInstaller
     public RecordingSystem recordingSystem;
     public override void InstallBindings()
     {
+        SignalBusInstaller.Install(Container);
         Container.BindInterfacesAndSelfTo<RecordingSystem>().FromInstance(recordingSystem).AsSingle();
         RecordingSignals();
     }
@@ -13,5 +14,7 @@ public class RecordAndReplayInstaller : MonoInstaller
     private void RecordingSignals()
     {
         Container.DeclareSignal<RecordDragging>();
+        Container.DeclareSignal<StartRecording>();
+        Container.DeclareSignal<StopRecording>();
     }
 }
