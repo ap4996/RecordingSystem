@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 926879771389615250}
   - component: {fileID: 6000936846322838669}
   - component: {fileID: -3980297929289439620}
+  - component: {fileID: -1673568590055905366}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -75,6 +76,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8ebd7860a0e01847b0d8d5eaf62cf38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timestamp: 0
 --- !u!114 &-3980297929289439620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,3 +90,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   recordingSystem: {fileID: 6000936846322838669}
+  replaySystem: {fileID: -1673568590055905366}
+--- !u!114 &-1673568590055905366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735990713735094950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a2243acb65e8db4ab3d098a7a0b2ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

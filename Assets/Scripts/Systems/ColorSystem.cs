@@ -12,6 +12,15 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
 
     [Inject]
     private ColorData colorData;
+    private SignalBus _signalBus;
+    
+    [Inject]
+    private void InjectSignalBus(SignalBus signalBus)
+    {
+        _signalBus = signalBus;
+        _signalBus.Subscribe<RecordInitialStateOfButtons>(SendInitialColorForRecording);
+        _signalBus.Subscribe<PlayRecording>(PlayRecording);
+    }
 
     private void Awake()
     {
@@ -20,12 +29,35 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        SetInitialColor();
+        SetInitialColor(colorData.GetRandomColorTemplate());
     }
 
-    private void SetInitialColor()
+    private void PlayRecording(PlayRecording signal)
     {
-        ColorTemplate ct = colorData.GetRandomColorTemplate();
+        if (signal.record.buttonName != gameObject.name) return;
+
+        if (signal.record.inputType == InputType.StartingState)
+        {
+            SetInitialColor(colorData.GetColorTemplate(signal.record.colorName));
+        }
+        if (signal.record.inputType == InputType.RightClickForColorChange)
+        {
+            ChangeColor();
+        }
+    }
+
+    private void SendInitialColorForRecording()
+    {
+        _signalBus.Fire(new RecordInputSignal
+        {
+            colorName = currentColor,
+            buttonName = gameObject.name,
+            inputType = InputType.StartingState
+        });
+    }
+
+    private void SetInitialColor(ColorTemplate ct)
+    {
         currentColor = ct.colorName;
         image.color = ct.currentColor;
     }
@@ -35,6 +67,10 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
         if(eventData.button == PointerEventData.InputButton.Right)
         {
             ChangeColor();
+            _signalBus.Fire(new RecordInputSignal { 
+                buttonName = gameObject.name,
+                inputType = InputType.RightClickForColorChange
+            });
         }
     }
 

@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using Zenject;
 
@@ -17,7 +18,7 @@ public class RecordingSystem : MonoBehaviour
         _signalBus = signalBus;
         _signalBus.Subscribe<StartRecording>(StartRecording);
         _signalBus.Subscribe<StopRecording>(StopRecording);
-        _signalBus.Subscribe<RecordDragging>(RecordDragging);
+        _signalBus.Subscribe<RecordInputSignal>(RecordInput);
     }
 
     private void Update()
@@ -32,22 +33,24 @@ public class RecordingSystem : MonoBehaviour
     {
         isRecording = true;
         recordingData = new RecordingData();
+        _signalBus.Fire(new RecordInitialStateOfButtons());
     }
 
-    private void StopRecording()
+    private void StopRecording(StopRecording signal)
     {
         isRecording = false;
         timestamp = 0f;
         string jsonString = JsonUtility.ToJson(recordingData);
-        Debug.Log(jsonString);
-        Debug.Log($"Object {recordingData.records.Count}");
-        RecordingData rd = JsonUtility.FromJson<RecordingData>(jsonString);
-        Debug.Log($"Object from json {rd.records[0].buttonAnchoredPosition}");
+        string path = Application.persistentDataPath + "/" + signal.fileName + ".json";
+        File.WriteAllText(path, jsonString);
+        Debug.Log($"written in file {path}");
     }
 
-    private void RecordDragging(RecordDragging signal)
+    private void RecordInput(RecordInputSignal signal)
     {
-        recordingData.records.Add(new Record { timestamp = timestamp, buttonAnchoredPosition = signal.anchoredPosition, buttonName = signal.buttonName });
-        Debug.Log($"Record added {recordingData.records.Count}");
+        if(isRecording)
+        {
+            recordingData.records.Add(new Record { timestamp = timestamp, buttonAnchoredPosition = signal.anchoredPosition, buttonName = signal.buttonName, inputType = signal.inputType });
+        }
     }
 }
