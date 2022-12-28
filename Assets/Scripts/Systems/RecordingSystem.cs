@@ -22,7 +22,12 @@ public class RecordingSystem : MonoBehaviour
         _signalBus.Subscribe<StopRecording>(StopRecording);
         _signalBus.Subscribe<RecordInputSignal>(RecordInput);
     }
-
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<StartRecording>(StartRecording);
+        _signalBus.TryUnsubscribe<StopRecording>(StopRecording);
+        _signalBus.TryUnsubscribe<RecordInputSignal>(RecordInput);
+    }
     private void StartRecording()
     {
         isRecording = true;

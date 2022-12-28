@@ -60,6 +60,11 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
     {
         SetInitialColor(colorData.GetRandomColorTemplate());
     }
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<RecordInitialStateOfButtons>(SendInitialColorForRecording);
+        _signalBus.TryUnsubscribe<PlayRecording>(PlayRecording);
+    }
     #endregion
 
     #region IPointer implementation

@@ -16,6 +16,10 @@ public class ReplaySystem : MonoBehaviour
         _signalBus = signalBus;
         _signalBus.Subscribe<StartReplay>(StartReplay);
     }
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<StartReplay>(StartReplay);
+    }
     private void StartReplay(StartReplay signal)
     {
         CheckIfFileExists(signal.fileName);

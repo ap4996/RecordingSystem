@@ -25,6 +25,13 @@ public class UISystem : MonoBehaviour
         _signalBus.Subscribe<ReplayCompleted>(ReplayCompleted);
     }
 
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<SetBlockerState>(SetBlockerState);
+        _signalBus.TryUnsubscribe<FileDoesNotExistForReplay>(CannotReplay);
+        _signalBus.TryUnsubscribe<ReplayCompleted>(ReplayCompleted);
+    }
+
     private void SetBlockerState(SetBlockerState signal)
     {
         blockingOverlay.SetActive(signal.enable);

@@ -30,7 +30,11 @@ public class HoverAndPopupSystem : MonoBehaviour, IPointerEnterHandler, IPointer
         _signalBus.Subscribe<PlayRecording>(PlayRecording);
         _signalBus.Subscribe<HideTooltipSignal>(HideTooltip);
     }
-
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<PlayRecording>(PlayRecording);
+        _signalBus.TryUnsubscribe<HideTooltipSignal>(HideTooltip);
+    }
     private void PlayRecording(PlayRecording signal)
     {
         if (signal.record.buttonName != gameObject.name) return;

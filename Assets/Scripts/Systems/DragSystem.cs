@@ -20,6 +20,12 @@ public class DragSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDr
         _signalBus.Subscribe<PlayRecording>(PlayRecording);
         _signalBus.Subscribe<ReplayCompleted>(ReplayCompleted);
     }
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<RecordInitialStateOfButtons>(SendInitialPosition);
+        _signalBus.TryUnsubscribe<PlayRecording>(PlayRecording);
+        _signalBus.TryUnsubscribe<ReplayCompleted>(ReplayCompleted);
+    }
     private void ReplayCompleted()
     {
         SetButtonPosition(startingPosition);

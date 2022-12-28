@@ -18,7 +18,11 @@ public class PopupController : MonoBehaviour
         _signalBus.Subscribe<OpenPopup>(OpenPopup);
         _signalBus.Subscribe<PlayRecording>(PlayRecording);
     }
-
+    private void OnDestroy()
+    {
+        _signalBus.TryUnsubscribe<OpenPopup>(OpenPopup);
+        _signalBus.TryUnsubscribe<PlayRecording>(PlayRecording);
+    }
     private void PlayRecording(PlayRecording signal)
     {
         if(signal.record.inputType == InputType.PopupClosed)
