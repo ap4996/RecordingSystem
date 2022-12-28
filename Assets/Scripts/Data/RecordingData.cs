@@ -23,12 +23,21 @@ public class Record
     public ColorName colorName;
 }
 
+[Serializable]
 public enum InputType
 {
-    StartingState,
+    StartingPosition,
+    StartingColor,
     Dragging,
-    RightClickForColorChange
+    RightClickForColorChange,
+    ShowTooltip,
+    HideTooltip,
+    PopupOpened,
+    PopupClosed,
+    StopRecording
 }
+
+#region signals
 
 public struct RecordInputSignal
 {
@@ -61,3 +70,29 @@ public struct PlayRecording
 {
     public Record record;
 }
+
+public struct SetBlockerState
+{
+    public bool enable;
+}
+
+public struct HideTooltipSignal
+{
+
+}
+
+public struct ReplayCompleted
+{
+
+}
+
+public struct FileDoesNotExistForReplay
+{
+
+}
+
+public struct OpenPopup
+{
+    public string popupContent;
+}
+#endregion

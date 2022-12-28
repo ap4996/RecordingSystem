@@ -11,6 +11,7 @@ public class RecordAndReplayInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<RecordingSystem>().FromInstance(recordingSystem).AsSingle();
         Container.BindInterfacesAndSelfTo<ReplaySystem>().FromInstance(replaySystem).AsSingle();
         RecordingSignals();
+        ReplaySignals();
     }
 
     private void RecordingSignals()
@@ -19,7 +20,16 @@ public class RecordAndReplayInstaller : MonoInstaller
         Container.DeclareSignal<StartRecording>();
         Container.DeclareSignal<StopRecording>();
         Container.DeclareSignal<PlayRecording>();
-        Container.DeclareSignal<StartReplay>();
+        Container.DeclareSignal<HideTooltipSignal>();
         Container.DeclareSignal<RecordInitialStateOfButtons>();
+        Container.DeclareSignal<OpenPopup>();
+    }
+
+    private void ReplaySignals()
+    {
+        Container.DeclareSignal<StartReplay>();
+        Container.DeclareSignal<ReplayCompleted>();
+        Container.DeclareSignal<SetBlockerState>();
+        Container.DeclareSignal<FileDoesNotExistForReplay>();
     }
 }

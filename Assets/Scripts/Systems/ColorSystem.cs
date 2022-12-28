@@ -10,6 +10,7 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
     [SerializeField]
     private ColorName currentColor;
 
+    #region Zenject
     [Inject]
     private ColorData colorData;
     private SignalBus _signalBus;
@@ -22,21 +23,22 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
         _signalBus.Subscribe<PlayRecording>(PlayRecording);
     }
 
-    private void Awake()
+    private void SendInitialColorForRecording()
     {
-        image = GetComponent<Image>();
-    }
-
-    private void Start()
-    {
-        SetInitialColor(colorData.GetRandomColorTemplate());
+        Debug.Log($"Current Color {currentColor}");
+        _signalBus.Fire(new RecordInputSignal
+        {
+            colorName = currentColor,
+            buttonName = gameObject.name,
+            inputType = InputType.StartingColor
+        });
     }
 
     private void PlayRecording(PlayRecording signal)
     {
         if (signal.record.buttonName != gameObject.name) return;
 
-        if (signal.record.inputType == InputType.StartingState)
+        if (signal.record.inputType == InputType.StartingColor)
         {
             SetInitialColor(colorData.GetColorTemplate(signal.record.colorName));
         }
@@ -46,32 +48,40 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void SendInitialColorForRecording()
+    #endregion
+
+    #region MonoBehaviour
+    private void Awake()
     {
-        _signalBus.Fire(new RecordInputSignal
-        {
-            colorName = currentColor,
-            buttonName = gameObject.name,
-            inputType = InputType.StartingState
-        });
+        image = GetComponent<Image>();
     }
 
-    private void SetInitialColor(ColorTemplate ct)
+    private void Start()
     {
-        currentColor = ct.colorName;
-        image.color = ct.currentColor;
+        SetInitialColor(colorData.GetRandomColorTemplate());
     }
+    #endregion
 
+    #region IPointer implementation
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(eventData.button == PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
             ChangeColor();
-            _signalBus.Fire(new RecordInputSignal { 
+            _signalBus.Fire(new RecordInputSignal
+            {
                 buttonName = gameObject.name,
                 inputType = InputType.RightClickForColorChange
             });
         }
+    }
+    #endregion
+
+    #region Button Manipulation
+    private void SetInitialColor(ColorTemplate ct)
+    {
+        currentColor = ct.colorName;
+        image.color = ct.currentColor;
     }
 
     private void ChangeColor()
@@ -80,4 +90,5 @@ public class ColorSystem : MonoBehaviour, IPointerClickHandler
         image.color = ct.nextColor;
         currentColor = ct.nextColorName;
     }
+    #endregion
 }

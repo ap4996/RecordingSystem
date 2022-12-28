@@ -10,6 +10,8 @@ public class RecordingSystem : MonoBehaviour
 
     private RecordingData recordingData;
 
+    #region Zenject
+
     private SignalBus _signalBus;
 
     [Inject]
@@ -21,14 +23,6 @@ public class RecordingSystem : MonoBehaviour
         _signalBus.Subscribe<RecordInputSignal>(RecordInput);
     }
 
-    private void Update()
-    {
-        if(isRecording)
-        {
-            timestamp += Time.deltaTime;
-        }
-    }
-
     private void StartRecording()
     {
         isRecording = true;
@@ -38,19 +32,43 @@ public class RecordingSystem : MonoBehaviour
 
     private void StopRecording(StopRecording signal)
     {
+        _signalBus.Fire(new RecordInputSignal
+        {
+            inputType = InputType.StopRecording
+        });
         isRecording = false;
         timestamp = 0f;
-        string jsonString = JsonUtility.ToJson(recordingData);
-        string path = Application.persistentDataPath + "/" + signal.fileName + ".json";
-        File.WriteAllText(path, jsonString);
-        Debug.Log($"written in file {path}");
+        SaveRecordingDataInFile(signal.fileName);
     }
 
     private void RecordInput(RecordInputSignal signal)
     {
-        if(isRecording)
+        if (isRecording)
         {
-            recordingData.records.Add(new Record { timestamp = timestamp, buttonAnchoredPosition = signal.anchoredPosition, buttonName = signal.buttonName, inputType = signal.inputType });
+            recordingData.records.Add(new Record { timestamp = timestamp, buttonAnchoredPosition = signal.anchoredPosition, buttonName = signal.buttonName, inputType = signal.inputType, colorName = signal.colorName });
         }
     }
+
+    #endregion
+
+    #region Timer
+    private void Update()
+    {
+        if(isRecording)
+        {
+            timestamp += Time.deltaTime;
+        }
+    }
+
+    #endregion
+
+    #region File Manipulation
+    private void SaveRecordingDataInFile(string fileName)
+    {
+        string jsonString = JsonUtility.ToJson(recordingData);
+        string path = Application.persistentDataPath + "/" + fileName + ".json";
+        File.WriteAllText(path, jsonString);
+    }
+    #endregion
+
 }

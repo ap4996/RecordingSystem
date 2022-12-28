@@ -12,6 +12,11 @@ public class TextData : ScriptableObject
     {
         return buttonTexts.Find(x => button == x.buttonShape).tooltipText;
     }
+
+    public string GetPopupText(ButtonShape button)
+    {
+        return buttonTexts.Find(x => button == x.buttonShape).popupText;
+    }
 }
 
 [Serializable]
