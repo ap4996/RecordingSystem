@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using DDTest.Extensions;
+using RS.Extensions;
 
 [CreateAssetMenu(fileName = "TextData", menuName = "TextData")]
 public class TextData : ScriptableObject

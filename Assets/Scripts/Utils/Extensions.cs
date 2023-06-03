@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DDTest.Extensions
+namespace RS.Extensions
 {
     public static class Extensions
     {
